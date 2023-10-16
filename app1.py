@@ -394,7 +394,7 @@ def change_language(*args: tuple):
 def run_person_through_social_nets_databases(*args: tuple):
     """
     Поиск человека по базе данных социальных сетей ВКонтакте и Facebook
-    :param args: имя, фамилия TODO город
+    :param args: имя, фамилия
     """
     if not args[0]: return
 
@@ -608,6 +608,3 @@ if __name__ == "__main__":
                     if not intent and guess == len(voice_input_parts)-1:
                         config["failure_phrases"]()
 
-# TODO food order
-# TODO recommend film by rating/genre (use recommendation system project)
-#  как насчёт "название фильма"? Вот его описание:.....
