@@ -1,3 +1,5 @@
+import webbrowser
+
 from vosk import Model, KaldiRecognizer  # оффлайн-распознавание от Vosk
 import speech_recognition  # распознавание пользовательской речи (Speech-To-Text)
 import pyttsx3  # синтез речи (Text-To-Speech)
@@ -117,6 +119,32 @@ def use_offline_recognition():
 
     return recognized_data
 
+def execute_command_with_name(command_name: str, *args: list):
+    """
+    Выполнение заданной пользователем команды с дополнительными аргументами
+    :param command_name: название команды
+    :param args: аргументы, которые будут переданы в функцию
+    :return:
+    """
+    for key in commands.keys():
+        if command_name in key:
+            commands[key](*args)
+        else:
+            pass  # print("Command not found")
+
+def search_for_video_on_youtube(*args: tuple):
+    """
+    Поиск видео на YouTube с автоматическим открытием ссылки на список результатов
+    :param args: фраза поискового запроса
+    """
+    if not args[0]: return
+    search_term = " ".join(args[0])
+    url = "https://www.youtube.com/results?search_query=" + search_term
+    webbrowser.get().open(url)
+
+    # для мультиязычных голосовых ассистентов лучше создать
+    # отдельный класс, который будет брать перевод из JSON-файла
+    play_voice_assistant_speech("Here is what I found for " + search_term + "on youtube")
 
 if __name__ == "__main__":
 
@@ -146,6 +174,15 @@ if __name__ == "__main__":
         # отделение комманд от дополнительной информации (аргументов)
         voice_input = voice_input.split(" ")
         command = voice_input[0]
+        command_options = [str(input_part) for input_part in voice_input[1:len(voice_input)]]
+        execute_command_with_name(command, command_options)
 
-        if command == "привет":
-            play_voice_assistant_speech("Здравствуй")
+commands = {
+    ("hello", "hi", "morning", "привет"): play_greetings,
+    ("bye", "goodbye", "quit", "exit", "stop", "пока"): play_farewell_and_quit,
+    ("search", "google", "find", "найди"): search_for_term_on_google,
+    ("video", "youtube", "watch", "видео"): search_for_video_on_youtube,
+    ("wikipedia", "definition", "about", "определение", "википедия"): search_for_definition_on_wikipedia,
+    ("translate", "interpretation", "translation", "перевод", "перевести", "переведи"): get_translation,
+    ("language", "язык"): change_language,
+    ("weather", "forecast", "погода", "прогноз"): get_weather_forecast,
