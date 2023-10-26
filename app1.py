@@ -3,6 +3,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
+from config import WEATHER_API_KEY
+
 from vosk import Model, KaldiRecognizer  # оффлайн-распознавание от Vosk
 from googlesearch import search  # поиск в Google
 from pyowm import OWM  # использование OpenWeatherMap для получения данных о погоде
@@ -45,10 +47,10 @@ class OwnerPerson:
     """
     Информация о владельце, включающие имя, город проживания, родной язык речи, изучаемый язык (для переводов текста)
     """
-    name = ""
-    home_city = ""
-    native_language = ""
-    target_language = ""
+    name = "Egor"
+    home_city = "Moscow"
+    native_language = "ru"
+    target_language = "ru"
 
 
 class VoiceAssistant:
@@ -57,10 +59,11 @@ class VoiceAssistant:
     Примечание: для мультиязычных голосовых ассистентов лучше создать отдельный класс,
     который будет брать перевод из JSON-файла с нужным языком
     """
-    name = ""
-    sex = ""
-    speech_language = ""
-    recognition_language = ""
+    name = "Ksenia"
+    sex = "female"
+    speech_language = "ru"
+    recognition_language = "ru"
+
 
 
 def setup_assistant_voice():
@@ -201,8 +204,8 @@ def play_farewell_and_quit(*args: tuple):
 
 def search_for_term_on_google(*args: tuple):
     """
-    Поиск в Google с автоматическим открытием ссылок (на список результатов и на сами результаты, если возможно)
-    :param args: фраза поискового запроса
+    #Поиск в Google с автоматическим открытием ссылок (на список результатов и на сами результаты, если возможно)
+    #:param args: фраза поискового запроса
     """
     if not args[0]: return
     search_term = " ".join(args[0])
@@ -336,7 +339,7 @@ def get_translation(*args: tuple):
 def get_weather_forecast(*args: tuple):
     """
     Получение и озвучивание прогнза погоды
-    :param args: город, по которому должен выполняться запос
+    :param args: город, по которому должен выполняться запрос
     """
     # в случае наличия дополнительного аргумента - запрос погоды происходит по нему,
     # иначе - используется город, заданный в настройках
@@ -348,7 +351,7 @@ def get_weather_forecast(*args: tuple):
 
     try:
         # использование API-ключа, помещённого в .env-файл по примеру WEATHER_API_KEY = "01234abcd....."
-        weather_api_key = os.getenv("b352e747d34bb62aff91748f6dd9a278")
+        weather_api_key = (WEATHER_API_KEY)
         open_weather_map = OWM(weather_api_key)
 
         # запрос данных о текущем состоянии погоды
@@ -382,7 +385,7 @@ def get_weather_forecast(*args: tuple):
     play_voice_assistant_speech(translator.get("The pressure is {} mm Hg").format(str(pressure)))
 
 
-def change_language(*args: tuple):
+def change_language():
     """
     Изменение языка голосового ассистента (языка распознавания речи)
     """
@@ -433,6 +436,20 @@ def toss_coin(*args: tuple):
     winner = "Tails" if tails > heads else "Heads"
     play_voice_assistant_speech(translator.get(winner) + " " + translator.get("won"))
 
+def explanation(*args: tuple):
+    """
+    Команда ассистенту рассказать о себе
+    """
+    play_voice_assistant_speech(translator.get("Hello, I am your personal assistant to solve problems in learning and "
+                                               "more You are probably wondering what I can do and how I can help you "
+                                               "Let me tell you: I can tell you how to get to the classroom you need "
+                                               "or the name of your teacher when you forgot. Current university "
+                                               "information, which includes schedules, news, information about "
+                                               "teachers and much more. With me, your studies will reach a new level "
+                                               ". Modern technologies, useful options and much more. But that's not "
+                                               "all, I will help teachers make their work easier. You will always "
+                                               "know about your visit and the protection of your work."))
+
 
 # перечень команд для использования в виде JSON-объекта
 config = {
@@ -448,7 +465,7 @@ config = {
             "responses": play_farewell_and_quit
         },
         "google_search": {
-            "examples": ["найди в гугл",
+            "examples": ["найди в гугл", "загугли",
                          "search on google", "google", "find on google"],
             "responses": search_for_term_on_google
         },
@@ -458,7 +475,7 @@ config = {
             "responses": search_for_video_on_youtube
         },
         "wikipedia_search": {
-            "examples": ["найди определение", "найди на википедии",
+            "examples": ["найди определение", "найди на википедии","что такое",
                          "find on wikipedia", "find definition", "tell about"],
             "responses": search_for_definition_on_wikipedia
         },
@@ -486,6 +503,11 @@ config = {
             "examples": ["подбрось монетку", "подкинь монетку",
                          "toss coin", "coin", "flip a coin"],
             "responses": toss_coin
+        },
+        "explanation": {
+            "examples": ["расскажи о себе",
+                         "tell about yourself"],
+            "responses": explanation
         }
     },
 
@@ -607,4 +629,3 @@ if __name__ == "__main__":
                         break
                     if not intent and guess == len(voice_input_parts)-1:
                         config["failure_phrases"]()
-
