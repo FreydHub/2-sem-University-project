@@ -448,7 +448,7 @@ def explanation(*args: tuple):
                                                "teachers and much more. With me, your studies will reach a new level "
                                                ". Modern technologies, useful options and much more. But that's not "
                                                "all, I will help teachers make their work easier. You will always "
-                                               "know about your visit and the protection of your work."))
+                                               "know about your visit and the protection of your work"))
 
 
 # перечень команд для использования в виде JSON-объекта
