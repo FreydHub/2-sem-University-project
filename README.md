@@ -15,6 +15,9 @@ Mtyan - Голосовой Помощник
         
 **4) Распакуйте архив с голосовой моделью в папку *`Back-End`* и присвойте папке имя *`vosk_small_model_ru`*.**
 
+**5) Запустите файл `..\GUI\main.py` и пользуйтесь функционалом ассистента.**
+
+
 
 Для разработчиков <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXd1Ymp4bWZlb3BmM3F6OTR6bm1yZDYybTF5bnVyMmpmb3JvZnE5cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/98E3fXVHuqSvhpIj9J/giphy.gif" width="30px">
 =======================================        
